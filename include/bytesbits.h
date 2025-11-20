@@ -275,4 +275,24 @@ namespace IMD
                     return true;
         return false;
     }
+
+    template <typename T>
+    size_t zero_bit_amount(const T &val)
+    {
+        auto ptr = reinterpret_cast<const byte *>(&val);
+        size_t res{0}, bytes = byte_amount<T>();
+
+        for (size_t i(bytes); i-- > 0;)
+            for (size_t j(BITS_PER_BYTE); j-- > 0;)
+                if (((static_cast<unsigned char>(ptr[i]) >> j) & 1) == 0)
+                    ++res;
+
+        return res;
+    }
+
+    template <typename T>
+    size_t one_bit_amount(const T &val)
+    {
+        return bits_amount<T>() - zero_bit_amount(val);
+    }
 }
