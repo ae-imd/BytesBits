@@ -59,4 +59,51 @@ namespace IMD
         }
     }
 
+    template <typename T>
+    bool all_bits_one(const T &val)
+    {
+        auto ptr = reinterpret_cast<const byte *>(&val);
+
+        for (size_t i(0); i < byte_amount<T>(); ++i)
+            for (size_t j{BITS_PER_BYTE}; j-- > 0;)
+                if (((static_cast<unsigned char>(ptr[i]) >> j) & 1) == 0)
+                    return false;
+        return true;
+    }
+
+    template <typename T>
+    bool all_bits_zero(const T &val)
+    {
+        auto ptr = reinterpret_cast<const byte *>(&val);
+
+        for (size_t i(0); i < byte_amount<T>(); ++i)
+            for (size_t j{BITS_PER_BYTE}; j-- > 0;)
+                if (((static_cast<unsigned char>(ptr[i]) >> j) & 1) == 1)
+                    return false;
+        return true;
+    }
+
+    template <typename T>
+    bool any_bits_zero(const T &val)
+    {
+        auto ptr = reinterpret_cast<const byte *>(&val);
+
+        for (size_t i(0); i < byte_amount<T>(); ++i)
+            for (size_t j{BITS_PER_BYTE}; j-- > 0;)
+                if (((static_cast<unsigned char>(ptr[i]) >> j) & 1) == 0)
+                    return true;
+        return false;
+    }
+
+    template <typename T>
+    bool any_bits_one(const T &val)
+    {
+        auto ptr = reinterpret_cast<const byte *>(&val);
+
+        for (size_t i(0); i < byte_amount<T>(); ++i)
+            for (size_t j{BITS_PER_BYTE}; j-- > 0;)
+                if (((static_cast<unsigned char>(ptr[i]) >> j) & 1) == 1)
+                    return true;
+        return false;
+    }
 }
