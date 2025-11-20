@@ -8,7 +8,8 @@
 
 int main()
 {
-    PRINT_TYPE_INFO(int);
+    int val = 314;
+    IMD::BIG_ENDIAN::print_bits(val);
 
     return 0;
 }
