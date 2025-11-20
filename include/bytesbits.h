@@ -1,4 +1,5 @@
 #include <ostream>
+#include <iomanip>
 
 namespace IMD
 {
@@ -36,6 +37,90 @@ namespace IMD
                     os << sep;
             }
         }
+
+        template <typename T>
+        void print_oct_bytes(const T &val, const char *sep = " ", std::ostream &os = std::cout)
+        {
+            if (sep == NULL)
+                throw std::invalid_argument("sep is NULL");
+
+            auto ptr = reinterpret_cast<const byte *>(&val);
+            auto bytes = byte_amount<T>();
+
+            for (size_t i(bytes); i-- > 0;)
+            {
+                os << "0" << std::setw(3) << std::setfill('0') << std::oct << static_cast<short>(static_cast<unsigned char>(ptr[i]));
+                if (i != 0)
+                    os << sep;
+            }
+
+            os << std::dec;
+        }
+
+        template <typename T>
+        void print_dec_bytes(const T &val, const char *sep = " ", std::ostream &os = std::cout)
+        {
+            if (sep == NULL)
+                throw std::invalid_argument("sep is NULL");
+
+            auto ptr = reinterpret_cast<const byte *>(&val);
+            auto bytes = byte_amount<T>();
+
+            for (size_t i(bytes); i-- > 0;)
+            {
+                os << static_cast<short>(static_cast<unsigned char>(ptr[i]));
+                if (i != 0)
+                    os << sep;
+            }
+        }
+
+        template <typename T>
+        void print_hex_bytes(const T &val, const char *sep = " ", std::ostream &os = std::cout)
+        {
+            if (sep == NULL)
+                throw std::invalid_argument("sep is NULL");
+
+            auto ptr = reinterpret_cast<const byte *>(&val);
+            auto bytes = byte_amount<T>();
+
+            for (size_t i(bytes); i-- > 0;)
+            {
+                os << "0x" << std::setw(2) << std::setfill('0') << std::hex << static_cast<short>(static_cast<unsigned char>(ptr[i]));
+                if (i != 0)
+                    os << sep;
+            }
+
+            os << std::dec;
+        }
+
+        template <typename T>
+        void println_bits(const T &val, const char *sep = " ", std::ostream &os = std::cout)
+        {
+            print_bits(val, sep, os);
+            os << std::endl;
+        }
+
+        template <typename T>
+        void println_oct_bytes(const T &val, const char *sep = " ", std::ostream &os = std::cout)
+        {
+            print_oct_bytes(val, sep, os);
+            os << std::endl;
+        }
+
+        template <typename T>
+        void println_dec_bytes(const T &val, const char *sep = " ", std::ostream &os = std::cout)
+        {
+            print_dec_bytes(val, sep, os);
+            os << std::endl;
+        }
+
+        template <typename T>
+        void println_hex_bytes(const T &val, const char *sep = " ", std::ostream &os = std::cout)
+        {
+            print_hex_bytes(val, sep, os);
+            os << std::endl;
+        }
+
     }
 
     namespace LITTLE_ENDIAN
@@ -57,6 +142,90 @@ namespace IMD
                     os << sep;
             }
         }
+
+        template <typename T>
+        void print_oct_bytes(const T &val, const char *sep = " ", std::ostream &os = std::cout)
+        {
+            if (sep == NULL)
+                throw std::invalid_argument("sep is NULL");
+
+            auto ptr = reinterpret_cast<const byte *>(&val);
+            auto bytes = byte_amount<T>();
+
+            for (size_t i(0); i < bytes; ++i)
+            {
+                os << "0" << std::setw(3) << std::setfill('0') << std::oct << static_cast<short>(static_cast<unsigned char>(ptr[i]));
+                if (i != bytes - 1)
+                    os << sep;
+            }
+
+            os << std::dec;
+        }
+
+        template <typename T>
+        void print_dec_bytes(const T &val, const char *sep = " ", std::ostream &os = std::cout)
+        {
+            if (sep == NULL)
+                throw std::invalid_argument("sep is NULL");
+
+            auto ptr = reinterpret_cast<const byte *>(&val);
+            auto bytes = byte_amount<T>();
+
+            for (size_t i(0); i < bytes; ++i)
+            {
+                os << static_cast<short>(static_cast<unsigned char>(ptr[i]));
+                if (i != bytes - 1)
+                    os << sep;
+            }
+        }
+
+        template <typename T>
+        void print_hex_bytes(const T &val, const char *sep = " ", std::ostream &os = std::cout)
+        {
+            if (sep == NULL)
+                throw std::invalid_argument("sep is NULL");
+
+            auto ptr = reinterpret_cast<const byte *>(&val);
+            auto bytes = byte_amount<T>();
+
+            for (size_t i(0); i < bytes; ++i)
+            {
+                os << "0x" << std::setw(2) << std::setfill('0') << std::hex << static_cast<short>(static_cast<unsigned char>(ptr[i]));
+                if (i != bytes - 1)
+                    os << sep;
+            }
+
+            os << std::dec;
+        }
+
+        template <typename T>
+        void println_bits(const T &val, const char *sep = " ", std::ostream &os = std::cout)
+        {
+            print_bits(val, sep, os);
+            os << std::endl;
+        }
+
+        template <typename T>
+        void println_oct_bytes(const T &val, const char *sep = " ", std::ostream &os = std::cout)
+        {
+            print_oct_bytes(val, sep, os);
+            os << std::endl;
+        }
+
+        template <typename T>
+        void println_dec_bytes(const T &val, const char *sep = " ", std::ostream &os = std::cout)
+        {
+            print_dec_bytes(val, sep, os);
+            os << std::endl;
+        }
+
+        template <typename T>
+        void println_hex_bytes(const T &val, const char *sep = " ", std::ostream &os = std::cout)
+        {
+            print_hex_bytes(val, sep, os);
+            os << std::endl;
+        }
+
     }
 
     template <typename T>

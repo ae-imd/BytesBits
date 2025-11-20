@@ -9,7 +9,11 @@
 int main()
 {
     int val = 314;
-    IMD::BIG_ENDIAN::print_bits(val);
+
+    IMD::BIG_ENDIAN::println_bits(val);
+    IMD::BIG_ENDIAN::println_oct_bytes(val);
+    IMD::BIG_ENDIAN::println_dec_bytes(val);
+    IMD::BIG_ENDIAN::println_hex_bytes(val);
 
     return 0;
 }
