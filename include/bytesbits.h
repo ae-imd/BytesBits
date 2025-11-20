@@ -121,6 +121,25 @@ namespace IMD
             os << std::endl;
         }
 
+        template <typename T, typename InputIt>
+        T restore_value(InputIt beg, InputIt end)
+        {
+            if (std::distance(beg, end) != sizeof(T))
+                throw std::runtime_error("std::distance(beg, end) != sizeof(T)");
+
+            T res;
+            auto ptr = reinterpret_cast<std::byte *>(&res);
+            size_t ind(byte_amount<T>() - 1);
+
+            while (beg != end)
+            {
+                ptr[ind] = static_cast<std::byte>(*beg);
+                --ind;
+                ++beg;
+            }
+
+            return res;
+        }
     }
 
     namespace LITTLE_ENDIAN
@@ -226,6 +245,25 @@ namespace IMD
             os << std::endl;
         }
 
+        template <typename T, typename InputIt>
+        T restore_value(InputIt beg, InputIt end)
+        {
+            if (std::distance(beg, end) != sizeof(T))
+                throw std::runtime_error("std::distance(beg, end) != sizeof(T)");
+
+            T res;
+            auto ptr = reinterpret_cast<std::byte *>(&res);
+            size_t ind(0);
+
+            while (beg != end)
+            {
+                ptr[ind] = static_cast<std::byte>(*beg);
+                ++ind;
+                ++beg;
+            }
+
+            return res;
+        }
     }
 
     template <typename T>
