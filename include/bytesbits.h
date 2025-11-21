@@ -333,4 +333,49 @@ namespace IMD
     {
         return bits_amount<T>() - zero_bit_amount(val);
     }
+
+    template <typename T>
+    void reverse_bytes(T &val)
+    {
+        auto ptr = reinterpret_cast<std::byte *>(&val);
+        size_t bytes = byte_amount<T>();
+        for (size_t i(0); i < bytes / 2; ++i)
+            std::swap(ptr[i], ptr[bytes - 1 - i]);
+    }
+
+    template <typename T>
+    void reverse_bits(T &val)
+    {
+        auto ptr = reinterpret_cast<std::byte *>(&val);
+        size_t bytes = byte_amount<T>();
+
+        for (size_t i(0); i < bytes; ++i)
+        {
+            unsigned char byte = static_cast<unsigned char>(ptr[i]);
+            unsigned char reversed_byte = 0;
+            for (size_t j(0); j < BITS_PER_BYTE; ++j)
+                reversed_byte |= ((byte >> j) & 1) << (BITS_PER_BYTE - 1 - j);
+            ptr[i] = static_cast<std::byte>(reversed_byte);
+        }
+
+        reverse_bytes(val);
+    }
+
+    template <typename T>
+    void fill_one_bit(T &val)
+    {
+        auto ptr = reinterpret_cast<std::byte *>(&val);
+        size_t bytes = byte_amount<T>();
+
+        std::fill(ptr, ptr + bytes, std::byte(255));
+    }
+
+    template <typename T>
+    void fill_zero_bit(T &val)
+    {
+        auto ptr = reinterpret_cast<std::byte *>(&val);
+        size_t bytes = byte_amount<T>();
+
+        std::fill(ptr, ptr + bytes, std::byte(0));
+    }
 }
