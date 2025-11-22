@@ -5,6 +5,7 @@
 
 int main()
 {
+
     const char *filepath = "../docs/NS.txt";
     PRINT_TYPE_INFO(int, std::cout);
 

@@ -1,13 +1,18 @@
 #ifndef __IMD_BYTES_BITS_
 #define __IMD_BYTES_BITS_
 
+#include <iostream>
+#include <stdexcept>
+#include <iomanip>
+#include <typeinfo>
+#include <algorithm>
+#include <iterator>
+#include <type_traits>
+
 #define PRINT_TYPE_INFO(T, OS)                                  \
     OS << "Type: " << typeid(T).name() << std::endl             \
        << "Byte amount: " << IMD::byte_amount<T>() << std::endl \
        << "Bit amount: " << IMD::bits_amount<T>() << std::endl
-
-#include <ostream>
-#include <iomanip>
 
 namespace IMD
 {
@@ -182,8 +187,18 @@ namespace IMD
             return (static_cast<unsigned char>(ptr[byte_index]) >> bit_in_byte) & 1;
         }
 
-    }
+        template <typename T>
+        void set_bit(T &val, size_t bit_index)
+        {
+            modify_bit(val, bit_index, 1);
+        }
 
+        template <typename T>
+        void reset_bit(T &val, size_t bit_index)
+        {
+            modify_bit(val, bit_index, 0);
+        }
+    }
     namespace LITTLE_ENDIAN
     {
         template <typename T>
@@ -215,7 +230,7 @@ namespace IMD
 
             for (size_t i(0); i < bytes; ++i)
             {
-                os << "0" << std::setw(3) << std::setfill('0') << std::oct << static_cast<short>(static_cast<unsigned char>(ptr[i]));
+                os << "0o" << std::setw(3) << std::setfill('0') << std::oct << static_cast<short>(static_cast<unsigned char>(ptr[i]));
                 if (i != bytes - 1)
                     os << sep;
             }
@@ -339,6 +354,17 @@ namespace IMD
             return (static_cast<unsigned char>(ptr[byte_index]) >> bit_in_byte) & 1;
         }
 
+        template <typename T>
+        void set_bit(T &val, size_t bit_index)
+        {
+            modify_bit(val, bit_index, 1);
+        }
+
+        template <typename T>
+        void reset_bit(T &val, size_t bit_index)
+        {
+            modify_bit(val, bit_index, 0);
+        }
     }
 
     template <typename T>
@@ -443,18 +469,12 @@ namespace IMD
     }
 
     template <typename T>
-    short sign(const T &val)
-    {
-        if (val == 0)
-            return 0;
-        if constexpr (std::is_unsigned_v<T>)
-            return 1;
-        return val & (T(1) << (bits_amount<T>() - 1)) ? -1 : 1;
-    }
-
-    template <typename T>
     constexpr T rotate_left(const T &val, size_t shift)
     {
+        if constexpr (std::is_signed_v<T>)
+            if (val < 0)
+                throw std::invalid_argument("value must be non-negative for signed types");
+
         size_t bits = bits_amount<T>();
         shift %= bits;
         if (shift == 0)
@@ -465,6 +485,10 @@ namespace IMD
     template <typename T>
     constexpr T rotate_right(const T &val, size_t shift)
     {
+        if constexpr (std::is_signed_v<T>)
+            if (val < 0)
+                throw std::invalid_argument("value must be non-negative for signed types");
+
         size_t bits = bits_amount<T>();
         shift %= bits;
         if (shift == 0)
@@ -475,21 +499,25 @@ namespace IMD
     template <typename T>
     constexpr T rotate_carry_left(const T &val, bool carry_in, bool &carry_out, size_t steps)
     {
-        if (steps <= 0)
+        if constexpr (std::is_signed_v<T>)
+            if (val < 0)
+                throw std::invalid_argument("value must be non-negative for signed types");
+
+        if (steps == 0)
         {
             carry_out = carry_in;
             return val;
         }
 
-        constexpr int BITS = sizeof(T) * CHAR_BIT;
-        steps %= BITS;
+        size_t bits = bits_amount<T>();
+        steps %= bits;
 
         T res = val;
         bool current_carry = carry_in;
 
         for (size_t i(0); i < steps; i++)
         {
-            bool next_carry = (res >> (BITS - 1)) & 1;
+            bool next_carry = (res >> (bits - 1)) & 1;
             res = (res << 1) | (current_carry ? 1 : 0);
             current_carry = next_carry;
         }
@@ -501,14 +529,18 @@ namespace IMD
     template <typename T>
     constexpr T rotate_carry_right(const T &val, bool carry_in, bool &carry_out, size_t steps)
     {
-        if (steps <= 0)
+        if constexpr (std::is_signed_v<T>)
+            if (val < 0)
+                throw std::invalid_argument("value must be non-negative for signed types");
+
+        if (steps == 0)
         {
             carry_out = carry_in;
             return val;
         }
 
-        constexpr int BITS = sizeof(T) * CHAR_BIT;
-        steps %= BITS;
+        size_t bits = bits_amount<T>();
+        steps %= bits;
 
         T res = val;
         bool current_carry = carry_in;
@@ -516,7 +548,7 @@ namespace IMD
         for (size_t i(0); i < steps; i++)
         {
             bool next_carry = res & 1;
-            res = (res >> 1) | (current_carry ? (static_cast<T>(1) << (BITS - 1)) : 0);
+            res = (res >> 1) | (current_carry ? (static_cast<T>(1) << (bits - 1)) : 0);
             current_carry = next_carry;
         }
 
