@@ -17,8 +17,11 @@ int main()
 
     PRINT_TYPE_INFO(int);
 
-    int val = 314;
+    short val = 314;
+    bool flag;
+    val = IMD::rotate_carry_right(val, 1, flag, 3);
     ofs << "Source value: " << val << std::endl;
+    ofs << "Sign: " << IMD::sign(val) << std::endl;
 
     ofs << "Bits: ";
     IMD::BIG_ENDIAN::println_bits(val, " ", ofs);

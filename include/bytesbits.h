@@ -368,22 +368,84 @@ namespace IMD
     }
 
     template <typename T>
-    constexpr T rotate_left(T value, int shift)
+    short sign(const T &val)
     {
-        size_t bits = bits_amount<T>();
-        shift %= bits;
-        if (shift == 0)
-            return T(0);
-        return (value << shift) | (value >> (bits - shift));
+        if (val == 0)
+            return 0;
+        if constexpr (std::is_unsigned_v<T>)
+            return 1;
+        return val & (T(1) << (bits_amount<T>() - 1)) ? -1 : 1;
     }
 
     template <typename T>
-    constexpr T rotate_right(T value, int shift)
+    constexpr T rotate_left(const T &val, int shift)
     {
         size_t bits = bits_amount<T>();
         shift %= bits;
         if (shift == 0)
             return T(0);
-        return (value >> shift) | (value << (bits - shift));
+        return (val << shift) | (val >> (bits - shift));
+    }
+
+    template <typename T>
+    constexpr T rotate_right(const T &val, int shift)
+    {
+        size_t bits = bits_amount<T>();
+        shift %= bits;
+        if (shift == 0)
+            return T(0);
+        return (val >> shift) | (val << (bits - shift));
+    }
+
+    template <typename T>
+    constexpr T rotate_carry_left(const T &val, bool carry_in, bool &carry_out, int steps)
+    {
+        if (steps <= 0)
+        {
+            carry_out = carry_in;
+            return val;
+        }
+
+        constexpr int BITS = sizeof(T) * CHAR_BIT;
+        steps %= BITS;
+
+        T res = val;
+        bool current_carry = carry_in;
+
+        for (size_t i(0); i < steps; i++)
+        {
+            bool next_carry = (res >> (BITS - 1)) & 1;
+            res = (res << 1) | (current_carry ? 1 : 0);
+            current_carry = next_carry;
+        }
+
+        carry_out = current_carry;
+        return res;
+    }
+
+    template <typename T>
+    constexpr T rotate_carry_right(const T &val, bool carry_in, bool &carry_out, int steps)
+    {
+        if (steps <= 0)
+        {
+            carry_out = carry_in;
+            return val;
+        }
+
+        constexpr int BITS = sizeof(T) * CHAR_BIT;
+        steps %= BITS;
+
+        T res = val;
+        bool current_carry = carry_in;
+
+        for (size_t i(0); i < steps; i++)
+        {
+            bool next_carry = res & 1;
+            res = (res >> 1) | (current_carry ? (static_cast<T>(1) << (BITS - 1)) : 0);
+            current_carry = next_carry;
+        }
+
+        carry_out = current_carry;
+        return res;
     }
 }
