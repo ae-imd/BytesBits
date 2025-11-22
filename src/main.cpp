@@ -17,8 +17,7 @@ int main()
 
     PRINT_TYPE_INFO(int);
 
-    int val = 314;
-    IMD::fill_zero_bit(val);
+    bool val = true;
     ofs << "Source value: " << val << std::endl;
 
     ofs << "Bits: ";

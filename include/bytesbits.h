@@ -270,11 +270,11 @@ namespace IMD
     bool all_bits_one(const T &val)
     {
         auto ptr = reinterpret_cast<const byte *>(&val);
+        auto tmp = std::byte((1 << BITS_PER_BYTE) - 1);
 
         for (size_t i(0); i < byte_amount<T>(); ++i)
-            for (size_t j{BITS_PER_BYTE}; j-- > 0;)
-                if (((static_cast<unsigned char>(ptr[i]) >> j) & 1) == 0)
-                    return false;
+            if (ptr[i] != tmp)
+                return false;
         return true;
     }
 
@@ -284,34 +284,21 @@ namespace IMD
         auto ptr = reinterpret_cast<const byte *>(&val);
 
         for (size_t i(0); i < byte_amount<T>(); ++i)
-            for (size_t j{BITS_PER_BYTE}; j-- > 0;)
-                if (((static_cast<unsigned char>(ptr[i]) >> j) & 1) == 1)
-                    return false;
+            if (ptr[i] != std::byte(0))
+                return false;
         return true;
     }
 
     template <typename T>
     bool any_bits_zero(const T &val)
     {
-        auto ptr = reinterpret_cast<const byte *>(&val);
-
-        for (size_t i(0); i < byte_amount<T>(); ++i)
-            for (size_t j{BITS_PER_BYTE}; j-- > 0;)
-                if (((static_cast<unsigned char>(ptr[i]) >> j) & 1) == 0)
-                    return true;
-        return false;
+        return !all_bits_one(val);
     }
 
     template <typename T>
     bool any_bits_one(const T &val)
     {
-        auto ptr = reinterpret_cast<const byte *>(&val);
-
-        for (size_t i(0); i < byte_amount<T>(); ++i)
-            for (size_t j{BITS_PER_BYTE}; j-- > 0;)
-                if (((static_cast<unsigned char>(ptr[i]) >> j) & 1) == 1)
-                    return true;
-        return false;
+        return !all_bits_zero(val);
     }
 
     template <typename T>
@@ -366,8 +353,9 @@ namespace IMD
     {
         auto ptr = reinterpret_cast<std::byte *>(&val);
         size_t bytes = byte_amount<T>();
+        auto tmp = std::byte((1 << BITS_PER_BYTE) - 1);
 
-        std::fill(ptr, ptr + bytes, std::byte(255));
+        std::fill(ptr, ptr + bytes, tmp);
     }
 
     template <typename T>
