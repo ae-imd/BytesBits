@@ -1,3 +1,11 @@
+#ifndef __IMD_BYTES_BITS_
+#define __IMD_BYTES_BITS_
+
+#define PRINT_TYPE_INFO(T, OS)                                  \
+    OS << "Type: " << typeid(T).name() << std::endl             \
+       << "Byte amount: " << IMD::byte_amount<T>() << std::endl \
+       << "Bit amount: " << IMD::bits_amount<T>() << std::endl
+
 #include <ostream>
 #include <iomanip>
 
@@ -140,6 +148,40 @@ namespace IMD
 
             return res;
         }
+
+        template <typename T>
+        void modify_bit(T &val, size_t bit_index, bool bit_value)
+        {
+            if (bit_index >= bits_amount<T>())
+                throw std::out_of_range("bit_index out of range");
+
+            auto ptr = reinterpret_cast<byte *>(&val);
+            size_t byte_index = byte_amount<T>() - 1 - (bit_index / BITS_PER_BYTE);
+            size_t bit_in_byte = bit_index % BITS_PER_BYTE;
+
+            byte &current_byte = ptr[byte_index];
+            unsigned char byte_val = static_cast<unsigned char>(current_byte);
+
+            if (bit_value)
+                byte_val |= (1 << bit_in_byte);
+            else
+                byte_val &= ~(1 << bit_in_byte);
+
+            current_byte = static_cast<byte>(byte_val);
+        }
+
+        template <typename T>
+        bool get_bit(const T &val, size_t bit_index)
+        {
+            if (bit_index >= bits_amount<T>())
+                throw std::out_of_range("bit_index out of range");
+
+            auto ptr = reinterpret_cast<const byte *>(&val);
+            size_t byte_index = byte_amount<T>() - 1 - (bit_index / BITS_PER_BYTE), bit_in_byte = bit_index % BITS_PER_BYTE;
+
+            return (static_cast<unsigned char>(ptr[byte_index]) >> bit_in_byte) & 1;
+        }
+
     }
 
     namespace LITTLE_ENDIAN
@@ -264,6 +306,39 @@ namespace IMD
 
             return res;
         }
+
+        template <typename T>
+        void modify_bit(T &val, size_t bit_index, bool bit_value)
+        {
+            if (bit_index >= bits_amount<T>())
+                throw std::out_of_range("bit_index out of range");
+
+            auto ptr = reinterpret_cast<byte *>(&val);
+            size_t byte_index = bit_index / BITS_PER_BYTE, bit_in_byte = bit_index % BITS_PER_BYTE;
+
+            byte &current_byte = ptr[byte_index];
+            unsigned char byte_val = static_cast<unsigned char>(current_byte);
+
+            if (bit_value)
+                byte_val |= (1 << bit_in_byte);
+            else
+                byte_val &= ~(1 << bit_in_byte);
+
+            current_byte = static_cast<byte>(byte_val);
+        }
+
+        template <typename T>
+        bool get_bit(const T &val, size_t bit_index)
+        {
+            if (bit_index >= bits_amount<T>())
+                throw std::out_of_range("bit_index out of range");
+
+            auto ptr = reinterpret_cast<const byte *>(&val);
+            size_t byte_index = bit_index / BITS_PER_BYTE, bit_in_byte = bit_index % BITS_PER_BYTE;
+
+            return (static_cast<unsigned char>(ptr[byte_index]) >> bit_in_byte) & 1;
+        }
+
     }
 
     template <typename T>
@@ -378,27 +453,27 @@ namespace IMD
     }
 
     template <typename T>
-    constexpr T rotate_left(const T &val, int shift)
+    constexpr T rotate_left(const T &val, size_t shift)
     {
         size_t bits = bits_amount<T>();
         shift %= bits;
         if (shift == 0)
-            return T(0);
+            return val;
         return (val << shift) | (val >> (bits - shift));
     }
 
     template <typename T>
-    constexpr T rotate_right(const T &val, int shift)
+    constexpr T rotate_right(const T &val, size_t shift)
     {
         size_t bits = bits_amount<T>();
         shift %= bits;
         if (shift == 0)
-            return T(0);
+            return val;
         return (val >> shift) | (val << (bits - shift));
     }
 
     template <typename T>
-    constexpr T rotate_carry_left(const T &val, bool carry_in, bool &carry_out, int steps)
+    constexpr T rotate_carry_left(const T &val, bool carry_in, bool &carry_out, size_t steps)
     {
         if (steps <= 0)
         {
@@ -424,7 +499,7 @@ namespace IMD
     }
 
     template <typename T>
-    constexpr T rotate_carry_right(const T &val, bool carry_in, bool &carry_out, int steps)
+    constexpr T rotate_carry_right(const T &val, bool carry_in, bool &carry_out, size_t steps)
     {
         if (steps <= 0)
         {
@@ -449,3 +524,5 @@ namespace IMD
         return res;
     }
 }
+
+#endif

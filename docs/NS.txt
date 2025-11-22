@@ -1,6 +1,6 @@
-Source value: -8153
-Sign: -1
-Bits: 11100000 00100111
-Bytes in oct: 0o340 0o047
-Bytes in dec: 224 39
-Bytes in hex: 0xe0 0x27
+Source value: 33554746
+Sign: 1
+Bits: 00000010 00000000 00000001 00111010
+Bytes in oct: 0o002 0o000 0o001 0o072
+Bytes in dec: 2 0 1 58
+Bytes in hex: 0x02 0x00 0x01 0x3a

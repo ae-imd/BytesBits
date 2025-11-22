@@ -3,23 +3,18 @@
 #include <fstream>
 #include "../include/bytesbits.h"
 
-#define PRINT_TYPE_INFO(T)                                             \
-    std::cout << "Type: " << typeid(T).name() << std::endl             \
-              << "Byte amount: " << IMD::byte_amount<T>() << std::endl \
-              << "Bit amount: " << IMD::bits_amount<T>() << std::endl
-
 int main()
 {
     const char *filepath = "../docs/NS.txt";
+    PRINT_TYPE_INFO(int, std::cout);
+
     std::ofstream ofs(filepath);
     if (!ofs)
         return -1;
 
-    PRINT_TYPE_INFO(int);
+    int val = 314;
+    IMD::LITTLE_ENDIAN::modify_bit(val, 1, 1);
 
-    short val = 314;
-    bool flag;
-    val = IMD::rotate_carry_right(val, 1, flag, 3);
     ofs << "Source value: " << val << std::endl;
     ofs << "Sign: " << IMD::sign(val) << std::endl;
 
@@ -32,12 +27,6 @@ int main()
     IMD::BIG_ENDIAN::println_dec_bytes(val, " ", ofs);
     ofs << "Bytes in hex: ";
     IMD::BIG_ENDIAN::println_hex_bytes(val, " ", ofs);
-
-    std::array<std::byte, 4> bytes = {std::byte(0x78), std::byte(0x56),
-                                      std::byte(0x34), std::byte(0x12)};
-
-    std::cout << "Little endian restore value: " << IMD::LITTLE_ENDIAN::restore_value<int>(bytes.begin(), bytes.end()) << std::endl
-              << "Big endian restore value: " << IMD::BIG_ENDIAN::restore_value<int>(bytes.begin(), bytes.end()) << std::endl;
 
     return 0;
 }
