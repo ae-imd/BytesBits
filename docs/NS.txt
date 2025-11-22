@@ -1,6 +1,6 @@
 Source value: 314
-Sign: 1
 Bits: 00000000 00000000 00000001 00111010
+Bytes in bin: 0b00000000 0b00000000 0b00000001 0b00111010
 Bytes in oct: 0o000 0o000 0o001 0o072
 Bytes in dec: 0 0 1 58
 Bytes in hex: 0x00 0x00 0x01 0x3a

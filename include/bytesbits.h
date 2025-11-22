@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <iterator>
 #include <type_traits>
+#include <climits>
 
 #define PRINT_TYPE_INFO(T, OS)                                  \
     OS << "Type: " << typeid(T).name() << std::endl             \
@@ -16,7 +17,7 @@
 
 namespace IMD
 {
-    constexpr size_t BITS_PER_BYTE(8);
+    constexpr size_t BITS_PER_BYTE(CHAR_BIT);
     using byte = std::byte;
 
     template <typename T>
@@ -47,6 +48,25 @@ namespace IMD
                 for (size_t j(BITS_PER_BYTE); j-- > 0;)
                     os << ((static_cast<unsigned char>(ptr[i]) >> j) & 1);
                 if (sep && i != 0)
+                    os << sep;
+            }
+        }
+
+        template <typename T>
+        void print_bin_bytes(const T &val, const char *sep = " ", std::ostream &os = std::cout)
+        {
+            if (sep == NULL)
+                throw std::invalid_argument("sep is NULL");
+
+            auto ptr = reinterpret_cast<const byte *>(&val);
+            auto bytes = byte_amount<T>();
+
+            for (size_t i(bytes); i-- > 0;)
+            {
+                os << "0b";
+                for (size_t j(BITS_PER_BYTE); j-- > 0;)
+                    os << ((static_cast<unsigned char>(ptr[i]) >> j) & 1);
+                if (i != 0)
                     os << sep;
             }
         }
@@ -110,6 +130,13 @@ namespace IMD
         void println_bits(const T &val, const char *sep = " ", std::ostream &os = std::cout)
         {
             print_bits(val, sep, os);
+            os << std::endl;
+        }
+
+        template <typename T>
+        void println_bin_bytes(const T &val, const char *sep = " ", std::ostream &os = std::cout)
+        {
+            print_bin_bytes(val, sep, os);
             os << std::endl;
         }
 
@@ -220,6 +247,25 @@ namespace IMD
         }
 
         template <typename T>
+        void print_bin_bytes(const T &val, const char *sep = " ", std::ostream &os = std::cout)
+        {
+            if (sep == NULL)
+                throw std::invalid_argument("sep is NULL");
+
+            auto ptr = reinterpret_cast<const byte *>(&val);
+            auto bytes = byte_amount<T>();
+
+            for (size_t i(0); i < bytes; ++i)
+            {
+                os << "0b";
+                for (size_t j(BITS_PER_BYTE); j-- > 0;)
+                    os << ((static_cast<unsigned char>(ptr[i]) >> j) & 1);
+                if (i != bytes - 1)
+                    os << sep;
+            }
+        }
+
+        template <typename T>
         void print_oct_bytes(const T &val, const char *sep = " ", std::ostream &os = std::cout)
         {
             if (sep == NULL)
@@ -278,6 +324,13 @@ namespace IMD
         void println_bits(const T &val, const char *sep = " ", std::ostream &os = std::cout)
         {
             print_bits(val, sep, os);
+            os << std::endl;
+        }
+
+        template <typename T>
+        void println_bin_bytes(const T &val, const char *sep = " ", std::ostream &os = std::cout)
+        {
+            print_bin_bytes(val, sep, os);
             os << std::endl;
         }
 
