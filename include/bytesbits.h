@@ -38,7 +38,7 @@ namespace IMD
         void print_bits(const T &val, const char *sep = " ", std::ostream &os = std::cout)
         {
             if (sep == NULL)
-                throw std::invalid_argument("sep is NULL");
+                throw std::invalid_argument("The sep is NULL");
 
             auto ptr = reinterpret_cast<const byte *>(&val);
             auto bytes = byte_amount<T>();
@@ -56,7 +56,7 @@ namespace IMD
         void print_bin_bytes(const T &val, const char *sep = " ", std::ostream &os = std::cout)
         {
             if (sep == NULL)
-                throw std::invalid_argument("sep is NULL");
+                throw std::invalid_argument("The sep is NULL");
 
             auto ptr = reinterpret_cast<const byte *>(&val);
             auto bytes = byte_amount<T>();
@@ -75,7 +75,7 @@ namespace IMD
         void print_oct_bytes(const T &val, const char *sep = " ", std::ostream &os = std::cout)
         {
             if (sep == NULL)
-                throw std::invalid_argument("sep is NULL");
+                throw std::invalid_argument("The sep is NULL");
 
             auto ptr = reinterpret_cast<const byte *>(&val);
             auto bytes = byte_amount<T>();
@@ -94,7 +94,7 @@ namespace IMD
         void print_dec_bytes(const T &val, const char *sep = " ", std::ostream &os = std::cout)
         {
             if (sep == NULL)
-                throw std::invalid_argument("sep is NULL");
+                throw std::invalid_argument("The sep is NULL");
 
             auto ptr = reinterpret_cast<const byte *>(&val);
             auto bytes = byte_amount<T>();
@@ -111,7 +111,7 @@ namespace IMD
         void print_hex_bytes(const T &val, const char *sep = " ", std::ostream &os = std::cout)
         {
             if (sep == NULL)
-                throw std::invalid_argument("sep is NULL");
+                throw std::invalid_argument("The sep is NULL");
 
             auto ptr = reinterpret_cast<const byte *>(&val);
             auto bytes = byte_amount<T>();
@@ -164,8 +164,8 @@ namespace IMD
         template <typename T, typename InputIt>
         T restore_value(InputIt beg, InputIt end)
         {
-            if (std::distance(beg, end) != sizeof(T))
-                throw std::runtime_error("std::distance(beg, end) != sizeof(T)");
+            if (std::distance(beg, end) != byte_amount<T>())
+                throw std::runtime_error("The amount of elements in the range does not match the size of the type T");
 
             T res;
             auto ptr = reinterpret_cast<std::byte *>(&res);
@@ -185,7 +185,7 @@ namespace IMD
         void modify_bit(T &val, size_t bit_index, bool bit_value)
         {
             if (bit_index >= bits_amount<T>())
-                throw std::out_of_range("bit_index out of range");
+                throw std::out_of_range("The bit index is out of range");
 
             auto ptr = reinterpret_cast<byte *>(&val);
             size_t byte_index = byte_amount<T>() - 1 - (bit_index / BITS_PER_BYTE);
@@ -206,7 +206,7 @@ namespace IMD
         bool get_bit(const T &val, size_t bit_index)
         {
             if (bit_index >= bits_amount<T>())
-                throw std::out_of_range("bit_index out of range");
+                throw std::out_of_range("The bit index is out of range");
 
             auto ptr = reinterpret_cast<const byte *>(&val);
             size_t byte_index = byte_amount<T>() - 1 - (bit_index / BITS_PER_BYTE), bit_in_byte = bit_index % BITS_PER_BYTE;
@@ -232,7 +232,7 @@ namespace IMD
         void print_bits(const T &val, const char *sep = " ", std::ostream &os = std::cout)
         {
             if (sep == NULL)
-                throw std::invalid_argument("sep is NULL");
+                throw std::invalid_argument("The sep is NULL");
 
             auto ptr = reinterpret_cast<const byte *>(&val);
             auto bytes = byte_amount<T>();
@@ -250,7 +250,7 @@ namespace IMD
         void print_bin_bytes(const T &val, const char *sep = " ", std::ostream &os = std::cout)
         {
             if (sep == NULL)
-                throw std::invalid_argument("sep is NULL");
+                throw std::invalid_argument("The sep is NULL");
 
             auto ptr = reinterpret_cast<const byte *>(&val);
             auto bytes = byte_amount<T>();
@@ -269,7 +269,7 @@ namespace IMD
         void print_oct_bytes(const T &val, const char *sep = " ", std::ostream &os = std::cout)
         {
             if (sep == NULL)
-                throw std::invalid_argument("sep is NULL");
+                throw std::invalid_argument("The sep is NULL");
 
             auto ptr = reinterpret_cast<const byte *>(&val);
             auto bytes = byte_amount<T>();
@@ -288,7 +288,7 @@ namespace IMD
         void print_dec_bytes(const T &val, const char *sep = " ", std::ostream &os = std::cout)
         {
             if (sep == NULL)
-                throw std::invalid_argument("sep is NULL");
+                throw std::invalid_argument("The sep is NULL");
 
             auto ptr = reinterpret_cast<const byte *>(&val);
             auto bytes = byte_amount<T>();
@@ -305,7 +305,7 @@ namespace IMD
         void print_hex_bytes(const T &val, const char *sep = " ", std::ostream &os = std::cout)
         {
             if (sep == NULL)
-                throw std::invalid_argument("sep is NULL");
+                throw std::invalid_argument("The sep is NULL");
 
             auto ptr = reinterpret_cast<const byte *>(&val);
             auto bytes = byte_amount<T>();
@@ -359,7 +359,7 @@ namespace IMD
         T restore_value(InputIt beg, InputIt end)
         {
             if (std::distance(beg, end) != sizeof(T))
-                throw std::runtime_error("std::distance(beg, end) != sizeof(T)");
+                throw std::runtime_error("The amount of elements in the range does not match the size of the type T");
 
             T res;
             auto ptr = reinterpret_cast<std::byte *>(&res);
@@ -379,7 +379,7 @@ namespace IMD
         void modify_bit(T &val, size_t bit_index, bool bit_value)
         {
             if (bit_index >= bits_amount<T>())
-                throw std::out_of_range("bit_index out of range");
+                throw std::out_of_range("The bit index is out of range");
 
             auto ptr = reinterpret_cast<byte *>(&val);
             size_t byte_index = bit_index / BITS_PER_BYTE, bit_in_byte = bit_index % BITS_PER_BYTE;
@@ -399,7 +399,7 @@ namespace IMD
         bool get_bit(const T &val, size_t bit_index)
         {
             if (bit_index >= bits_amount<T>())
-                throw std::out_of_range("bit_index out of range");
+                throw std::out_of_range("The bit index is out of range");
 
             auto ptr = reinterpret_cast<const byte *>(&val);
             size_t byte_index = bit_index / BITS_PER_BYTE, bit_in_byte = bit_index % BITS_PER_BYTE;
@@ -526,7 +526,7 @@ namespace IMD
     {
         if constexpr (std::is_signed_v<T>)
             if (val < 0)
-                throw std::invalid_argument("value must be non-negative for signed types");
+                throw std::invalid_argument("The val must be non-negative for signed types");
 
         size_t bits = bits_amount<T>();
         shift %= bits;
@@ -540,7 +540,7 @@ namespace IMD
     {
         if constexpr (std::is_signed_v<T>)
             if (val < 0)
-                throw std::invalid_argument("value must be non-negative for signed types");
+                throw std::invalid_argument("The val must be non-negative for signed types");
 
         size_t bits = bits_amount<T>();
         shift %= bits;
@@ -554,7 +554,7 @@ namespace IMD
     {
         if constexpr (std::is_signed_v<T>)
             if (val < 0)
-                throw std::invalid_argument("value must be non-negative for signed types");
+                throw std::invalid_argument("The val must be non-negative for signed types");
 
         if (steps == 0)
         {
@@ -584,7 +584,7 @@ namespace IMD
     {
         if constexpr (std::is_signed_v<T>)
             if (val < 0)
-                throw std::invalid_argument("value must be non-negative for signed types");
+                throw std::invalid_argument("The val must be non-negative for signed types");
 
         if (steps == 0)
         {
