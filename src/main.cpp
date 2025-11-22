@@ -17,7 +17,7 @@ int main()
 
     PRINT_TYPE_INFO(int);
 
-    bool val = true;
+    int val = 314;
     ofs << "Source value: " << val << std::endl;
 
     ofs << "Bits: ";

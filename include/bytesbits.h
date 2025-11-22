@@ -49,7 +49,7 @@ namespace IMD
 
             for (size_t i(bytes); i-- > 0;)
             {
-                os << "0" << std::setw(3) << std::setfill('0') << std::oct << static_cast<short>(static_cast<unsigned char>(ptr[i]));
+                os << "0o" << std::setw(3) << std::setfill('0') << std::oct << static_cast<short>(static_cast<unsigned char>(ptr[i]));
                 if (i != 0)
                     os << sep;
             }
@@ -365,5 +365,25 @@ namespace IMD
         size_t bytes = byte_amount<T>();
 
         std::fill(ptr, ptr + bytes, std::byte(0));
+    }
+
+    template <typename T>
+    constexpr T rotate_left(T value, int shift)
+    {
+        size_t bits = bits_amount<T>();
+        shift %= bits;
+        if (shift == 0)
+            return T(0);
+        return (value << shift) | (value >> (bits - shift));
+    }
+
+    template <typename T>
+    constexpr T rotate_right(T value, int shift)
+    {
+        size_t bits = bits_amount<T>();
+        shift %= bits;
+        if (shift == 0)
+            return T(0);
+        return (value >> shift) | (value << (bits - shift));
     }
 }

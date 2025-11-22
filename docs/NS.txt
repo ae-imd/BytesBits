@@ -1,5 +1,5 @@
-Source value: 1
-Bits: 00000001
-Bytes in oct: 0001
-Bytes in dec: 1
-Bytes in hex: 0x01
+Source value: 10048
+Bits: 00000000 00000000 00100111 01000000
+Bytes in oct: 0o000 0o000 0o047 0o100
+Bytes in dec: 0 0 39 64
+Bytes in hex: 0x00 0x00 0x27 0x40
